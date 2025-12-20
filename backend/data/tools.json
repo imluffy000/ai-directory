@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Figma",
+    "desc": "Design UI/UX for apps and websites",
+    "keywords": ["design", "ui", "ux", "app", "prototype"],
+    "rating": 4.8,
+    "url": "https://www.figma.com",
+    "tags": ["Design", "UI/UX"]
+  },
+  {
+    "name": "Uizard",
+    "desc": "AI-powered app design from text",
+    "keywords": ["design", "app", "wireframe", "ui"],
+    "rating": 4.6,
+    "url": "https://uizard.io",
+    "tags": ["AI", "No-Code"]
+  },
+  {
+    "name": "Framer",
+    "desc": "Build websites visually",
+    "keywords": ["website", "landing", "design"],
+    "rating": 4.7,
+    "url": "https://www.framer.com",
+    "tags": ["Website", "Design"]
+  }
+]
