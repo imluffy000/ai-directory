@@ -57,7 +57,7 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
 
   document.getElementById("results").innerHTML = "<p>Searching...</p>"
 
-  const response = await fetch("http://localhost:3000/search", {
+  const response = await fetch("https://ai-directory-8u0f.onrender.com", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
