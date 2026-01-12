@@ -1,17 +1,14 @@
-import './style.css'
+import "./style.css";
 
-const app = document.querySelector('#app')
+const BACKEND_URL = "https://ai-directory-8u0f.onrender.com";
 
-app.innerHTML = `
-  <div class="container">
-    <h1>AI Tool Finder</h1>
-    <p class="subtitle">Describe what you want to build</p>
+document.querySelector("#app").innerHTML = `
+  <div class="container hero">
+    <h1>Find the right AI tool in seconds</h1>
+    <p>Search naturally. Discover instantly. Build faster.</p>
 
     <div class="search-box">
-      <input 
-        id="prompt"
-        placeholder="I want to design an app..."
-      />
+      <input id="promptInput" placeholder="I want to design a mobile app" />
       <button id="searchBtn">Search</button>
     </div>
 
@@ -21,82 +18,98 @@ app.innerHTML = `
       <span>Generate marketing content</span>
     </div>
 
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">01</div>
+        <div>
+          <h3>Design a mobile app</h3>
+          <p>Tell us what you're building. We'll find the tools that work.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">02</div>
+        <div>
+          <h3>Create a website</h3>
+          <p>No technical knowledge needed. Just describe your idea.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">03</div>
+        <div>
+          <h3>Generate marketing content</h3>
+          <p>Find AI tools built for writers, marketers, and creators.</p>
+        </div>
+      </div>
+    </div>
+
     <div id="results" class="results"></div>
+
+    <div class="faq">
+      <h2>FAQ</h2>
+      <div class="faq-item">
+        <h4>How does search work?</h4>
+        <p>Type what you want to build in plain language.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Are tools free or paid?</h4>
+        <p>We list both with clear pricing.</p>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 AI Tool Directory. All rights reserved.
+    </footer>
   </div>
-`
+`;
 
-// Dummy data (for UI testing)
-const dummyTools = [
-  {
-    name: "Figma",
-    desc: "Design UI/UX for apps and websites",
-    tags: ["Design", "UI"],
-    rating: "⭐ 4.8"
-  },
-  {
-    name: "Uizard",
-    desc: "AI-powered app design from text",
-    tags: ["AI", "No-code"],
-    rating: "⭐ 4.6"
-  },
-  {
-    name: "Framer",
-    desc: "Build websites visually with AI",
-    tags: ["Website", "AI"],
-    rating: "⭐ 4.7"
+document.querySelectorAll(".examples span").forEach(span => {
+  span.onclick = () => {
+    document.getElementById("promptInput").value = span.innerText;
+  };
+});
+
+document.getElementById("searchBtn").onclick = async () => {
+  const prompt = document.getElementById("promptInput").value.trim();
+  const results = document.getElementById("results");
+
+  if (!prompt) return alert("Enter what you want to build");
+
+  results.innerHTML = "<p>Searching...</p>";
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/search`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+    renderResults(data.tools);
+  } catch {
+    results.innerHTML = "<p style='color:red'>Server error</p>";
   }
-]
+};
 
-document.getElementById("searchBtn").addEventListener("click", async () => {
-  const prompt = document.getElementById("prompt").value
+function renderResults(tools) {
+  const results = document.getElementById("results");
+  results.innerHTML = "";
 
-  if (!prompt) {
-    alert("Please enter something")
-    return
-  }
-
-  document.getElementById("results").innerHTML = "<p>Searching...</p>"
-
-  const response = await fetch("https://ai-directory-8u0f.onrender.com", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ prompt })
-  })
-
-  const data = await response.json()
-
-  showResults(data.tools)
-})
-
-
-function showResults(tools) {
-  const resultsDiv = document.getElementById("results");
-  resultsDiv.innerHTML = "";
-
-  tools.forEach(tool => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
+  tools.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
       <div class="card-header">
-        <h3>${tool.name}</h3>
-        <span class="rating">⭐ ${tool.rating}</span>
+        <h3>${t.name}</h3>
+        <span class="rating">⭐ ${t.rating}</span>
       </div>
-
-      <p class="desc">${tool.desc}</p>
-
+      <p class="desc">${t.desc}</p>
       <div class="tags">
-        ${tool.tags.map(tag => `<span>${tag}</span>`).join("")}
+        ${t.tags.map(tag => `<span>${tag}</span>`).join("")}
       </div>
-
-      <a href="${tool.url}" target="_blank" class="visit-btn">
-        Visit Website →
-      </a>
+      <a class="visit-btn" href="${t.url}" target="_blank">Visit →</a>
     `;
-
-    resultsDiv.appendChild(card);
+    results.appendChild(div);
   });
 }
-
